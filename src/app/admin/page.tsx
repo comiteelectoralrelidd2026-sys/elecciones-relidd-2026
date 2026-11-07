@@ -23,6 +23,7 @@ import {
   DEFAULT_COMUNICADOS 
 } from '@/lib/defaultData';
 import { SiteConfig, CalendarItem, DocumentItem, CandidaturaItem, ComunicadoItem } from '@/lib/types';
+import { uploadToCloudinaryClient } from '@/lib/cloudinary';
 import { 
   Settings, 
   Calendar, 
@@ -159,22 +160,7 @@ export default function AdminPage() {
 
   // Upload file helper
   const uploadToCloudinary = async (file: File, folder: string) => {
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('folder', folder);
-
-    const res = await fetch('/api/upload', {
-      method: 'POST',
-      body: formData,
-    });
-
-    if (!res.ok) {
-      const data = await res.json();
-      throw new Error(data.error || 'Fallo en la subida');
-    }
-
-    const data = await res.json();
-    return data.url;
+    return await uploadToCloudinaryClient(file, folder);
   };
 
   // Add Calendar Item
