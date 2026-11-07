@@ -515,36 +515,7 @@ export default function HomePage() {
               </span>
             </a>
             <div>
-              <p className="lead">Comité Electoral Nacional – RELIDD 2026. Síguenos en las redes oficiales:</p>
-              <div className="social" id="social-contacto">
-                {config.enlaces?.facebook ? (
-                  <a href={config.enlaces.facebook} target="_blank" rel="noopener noreferrer" aria-label="Facebook">
-                    <svg><use href="#i-fb"/></svg>
-                  </a>
-                ) : (
-                  <span className="off" title="Facebook: próximamente" aria-label="Facebook (próximamente)">
-                    <svg><use href="#i-fb"/></svg>
-                  </span>
-                )}
-                {config.enlaces?.instagram ? (
-                  <a href={config.enlaces.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram">
-                    <svg><use href="#i-ig"/></svg>
-                  </a>
-                ) : (
-                  <span className="off" title="Instagram: próximamente" aria-label="Instagram (próximamente)">
-                    <svg><use href="#i-ig"/></svg>
-                  </span>
-                )}
-                {config.enlaces?.youtube ? (
-                  <a href={config.enlaces.youtube} target="_blank" rel="noopener noreferrer" aria-label="YouTube">
-                    <svg><use href="#i-yt"/></svg>
-                  </a>
-                ) : (
-                  <span className="off" title="YouTube: próximamente" aria-label="YouTube (próximamente)">
-                    <svg><use href="#i-yt"/></svg>
-                  </span>
-                )}
-              </div>
+              <p className="lead">Comité Electoral Nacional – RELIDD 2026. Canal oficial de atención y consultas para todos los miembros y candidaturas del proceso electoral.</p>
             </div>
           </div>
         </section>
@@ -555,7 +526,7 @@ export default function HomePage() {
         <div className="stripe" aria-hidden="true"></div>
         <div className="wrap fgrid">
           <div className="fbrand">
-            <span className="chip"><img src="/img/logo-relidd.png" alt="RELIDD" /></span>
+            <span className="chip"><img src="/img/logo-elecciones.png" alt="Elecciones RELIDD 2026" style={{ height: '56px', width: 'auto' }} /></span>
           </div>
           <p className="fcom">
             Comité Electoral Nacional – RELIDD 2026<br/>
@@ -565,35 +536,6 @@ export default function HomePage() {
             <svg><use href="#i-mail"/></svg>
             {config.correo || 'elecciones@relidd.org'}
           </a>
-          <div className="social" id="social-footer">
-            {config.enlaces?.facebook ? (
-              <a href={config.enlaces.facebook} target="_blank" rel="noopener noreferrer" aria-label="Facebook">
-                <svg><use href="#i-fb"/></svg>
-              </a>
-            ) : (
-              <span className="off" title="Facebook: próximamente" aria-label="Facebook (próximamente)">
-                <svg><use href="#i-fb"/></svg>
-              </span>
-            )}
-            {config.enlaces?.instagram ? (
-              <a href={config.enlaces.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram">
-                <svg><use href="#i-ig"/></svg>
-              </a>
-            ) : (
-              <span className="off" title="Instagram: próximamente" aria-label="Instagram (próximamente)">
-                <svg><use href="#i-ig"/></svg>
-              </span>
-            )}
-            {config.enlaces?.youtube ? (
-              <a href={config.enlaces.youtube} target="_blank" rel="noopener noreferrer" aria-label="YouTube">
-                <svg><use href="#i-yt"/></svg>
-              </a>
-            ) : (
-              <span className="off" title="YouTube: próximamente" aria-label="YouTube (próximamente)">
-                <svg><use href="#i-yt"/></svg>
-              </span>
-            )}
-          </div>
           <div className="w-full text-xs text-center border-t border-red-900/40 pt-4 flex justify-between items-center opacity-80">
             <span>© 2026 RELIDD - Todos los derechos reservados.</span>
             <Link href="/acceso/" className="hover:underline flex items-center gap-1 text-yellow-200">
