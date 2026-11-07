@@ -90,6 +90,72 @@ export default function HomePage() {
     return d.toISOString().split('T')[0];
   }, []);
 
+  // Dynamic hero stage calculated from the calendar
+  const heroStage = useMemo(() => {
+    // 1. If today is during Empadronamiento and it is not yet closed:
+    const empItem = sortedCalendar.find(e => e.t.toLowerCase().includes('empadronamiento'));
+    if (empItem && todayStr <= empItem.fin && !isCerrado) {
+      return {
+        mensaje: "¡Empadrónate y sé parte del proceso democrático!",
+        btnTexto: "Ir al empadronamiento",
+        btnHref: config.enlaces?.empadronamiento || "#calendario",
+        isExternal: !!config.enlaces?.empadronamiento,
+        aviso: config.aviso || "Registro individual mediante el formulario oficial."
+      };
+    }
+
+    // 2. Find currently active event in calendar (today between ini and fin):
+    const activeEvent = sortedCalendar.find(e => todayStr >= e.ini && todayStr <= e.fin);
+    if (activeEvent) {
+      if (activeEvent.t.toLowerCase().includes('votación') || activeEvent.t.toLowerCase().includes('votacion')) {
+        return {
+          mensaje: `Etapa en curso: ${activeEvent.t}.`,
+          btnTexto: config.enlaces?.votacion ? "Ir a la plataforma de votación" : "Ver detalles de votación",
+          btnHref: config.enlaces?.votacion || "#votacion",
+          isExternal: !!config.enlaces?.votacion,
+          aviso: activeEvent.d
+        };
+      }
+      if (activeEvent.t.toLowerCase().includes('inscripción') || activeEvent.t.toLowerCase().includes('candidatura')) {
+        return {
+          mensaje: `Etapa en curso: ${activeEvent.t}.`,
+          btnTexto: "Ver candidaturas",
+          btnHref: "#candidaturas",
+          isExternal: false,
+          aviso: activeEvent.d
+        };
+      }
+      return {
+        mensaje: `Etapa en curso: ${activeEvent.t}.`,
+        btnTexto: "Ver calendario electoral",
+        btnHref: "#calendario",
+        isExternal: false,
+        aviso: activeEvent.d
+      };
+    }
+
+    // 3. If between stages, display the upcoming stage:
+    const nextEvent = sortedCalendar.find(e => e.ini > todayStr);
+    if (nextEvent) {
+      return {
+        mensaje: `Próxima etapa: ${nextEvent.t} (${nextEvent.f}).`,
+        btnTexto: "Ver calendario electoral",
+        btnHref: "#calendario",
+        isExternal: false,
+        aviso: nextEvent.d
+      };
+    }
+
+    // 4. If all election events completed:
+    return {
+      mensaje: "El proceso electoral RELIDD 2026 ha concluido satisfactoriamente.",
+      btnTexto: "Ver resultados y actas",
+      btnHref: "#comunicados",
+      isExternal: false,
+      aviso: "Gracias por participar y fortalecer la democracia institucional."
+    };
+  }, [sortedCalendar, todayStr, isCerrado, config.enlaces?.empadronamiento, config.enlaces?.votacion, config.aviso]);
+
   const navItems = [
     { href: '#inicio', id: 'inicio', label: 'Inicio', icon: 'home' },
     { href: '#calendario', id: 'calendario', label: 'Calendario', icon: 'cal' },
@@ -157,15 +223,6 @@ export default function HomePage() {
                 {item.label}
               </a>
             ))}
-            <Link 
-              href="/acceso/" 
-              className="text-relidd-red flex flex-col items-center gap-0.5 px-3 py-2 rounded-lg font-semibold hover:bg-red-50 transition"
-              title="Acceso exclusivo Comité Electoral"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              <svg className="w-5 h-5 text-relidd-red"><use href="#i-lock"/></svg>
-              <span>Comité</span>
-            </Link>
           </nav>
         </div>
         <div className="stripe" aria-hidden="true"></div>
@@ -197,33 +254,25 @@ export default function HomePage() {
               </svg>
             </div>
             <aside className="hero-side">
-              <p className="mensaje">
-                {isCerrado 
-                  ? (config.empadronamiento?.mensajeCerrado || "El período de empadronamiento ha concluido. Consulta el calendario electoral para conocer las siguientes etapas.") 
-                  : "¡Empadrónate y sé parte del proceso democrático!"}
-              </p>
+              <p className="mensaje">{heroStage.mensaje}</p>
               <span className="anio">2026</span>
-              {isCerrado ? (
-                <a className="btn btn-red" id="btn-emp" href="#calendario">
-                  Ver el calendario electoral <svg><use href="#i-arrow"/></svg>
-                </a>
-              ) : config.enlaces?.empadronamiento ? (
+              {heroStage.isExternal ? (
                 <a 
                   className="btn btn-red" 
                   id="btn-emp" 
-                  href={config.enlaces.empadronamiento} 
+                  href={heroStage.btnHref} 
                   target="_blank" 
                   rel="noopener noreferrer"
                 >
-                  Ir al empadronamiento <svg><use href="#i-arrow"/></svg>
+                  {heroStage.btnTexto} <svg><use href="#i-arrow"/></svg>
                 </a>
               ) : (
-                <a className="btn btn-red" id="btn-emp" href="#calendario">
-                  Ir al empadronamiento <svg><use href="#i-arrow"/></svg>
+                <a className="btn btn-red" id="btn-emp" href={heroStage.btnHref}>
+                  {heroStage.btnTexto} <svg><use href="#i-arrow"/></svg>
                 </a>
               )}
-              {!isCerrado && config.aviso && (
-                <p className="aviso" id="aviso">{config.aviso}</p>
+              {heroStage.aviso && (
+                <p className="aviso" id="aviso">{heroStage.aviso}</p>
               )}
             </aside>
           </div>
