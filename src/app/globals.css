@@ -1,0 +1,30 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --red: #A40029;
+  --green: #14833B;
+  --yellow: #F2C500;
+  --purple: #6B3FA0;
+  --ink: #161616;
+  --cream: #FDF7EE;
+  --line: #e7dfd2;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 86px;
+}
+
+body {
+  color: var(--ink);
+  background-color: #ffffff;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* Tricolor Institutional Stripe */
+.stripe-relidd {
+  height: 5px;
+  background: linear-gradient(90deg, #A40029 0 34%, #F2C500 34% 67%, #14833B 67%);
+}
