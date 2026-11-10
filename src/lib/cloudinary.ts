@@ -4,7 +4,7 @@ export async function uploadToCloudinaryClient(file: File, folder: string = 'ele
   const apiSecret = 'sZS6_a5V5CTwud3u6O7Hl9P6aLY';
 
   const timestamp = Math.round(new Date().getTime() / 1000);
-  const signatureStr = `folder=${folder}&timestamp=${timestamp}${apiSecret}`;
+  const signatureStr = `access_mode=public&folder=${folder}&timestamp=${timestamp}${apiSecret}`;
 
   // Use browser native Web Crypto API for SHA-1
   const encoder = new TextEncoder();
@@ -18,6 +18,7 @@ export async function uploadToCloudinaryClient(file: File, folder: string = 'ele
   formData.append('api_key', apiKey);
   formData.append('timestamp', timestamp.toString());
   formData.append('folder', folder);
+  formData.append('access_mode', 'public');
   formData.append('signature', signature);
 
   const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/auto/upload`, {

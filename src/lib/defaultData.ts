@@ -46,6 +46,7 @@ export const DEFAULT_CALENDAR: CalendarItem[] = [
 ];
 
 export const DEFAULT_DOCUMENTS: DocumentItem[] = [
+  { t: "Padrón Electoral Oficial RELIDD", d: "Padrón definitivo publicado el 9 de noviembre de 2026. Verifica con tu carnet de identidad.", archivo: "/docs/padron-electoral-definitivo.pdf", estado: "Oficial" },
   { t: "Convocatoria Electoral 2026", d: "Convocatoria N.º 001/2026 · Gestión 2027", archivo: "/docs/convocatoria-electoral-2026.pdf" },
   { t: "Reglamento Electoral", d: "Texto en revisión (Proyecto)", archivo: "/docs/proyecto-reglamento-electoral.pdf", estado: "Proyecto" },
   { t: "Cronograma Electoral", d: "Disponible en esta página, sección Calendario", archivo: "#calendario" },
