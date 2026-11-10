@@ -44,6 +44,102 @@ import {
   RefreshCw
 } from 'lucide-react';
 
+function DropzoneUpload({
+  label,
+  value,
+  accept,
+  folder,
+  onChange,
+  onNotify,
+  onError
+}: {
+  label: string;
+  value: string;
+  accept: string;
+  folder: string;
+  onChange: (url: string) => void;
+  onNotify: (msg: string) => void;
+  onError: (err: string) => void;
+}) {
+  const [isDragging, setIsDragging] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+
+  const processFile = async (file: File) => {
+    try {
+      setIsUploading(true);
+      onNotify('Subiendo archivo automáticamente...');
+      const url = await uploadToCloudinaryClient(file, folder);
+      onChange(url);
+      onNotify('¡Archivo subido y vinculado con éxito!');
+    } catch (err: any) {
+      onError('Error al subir: ' + err.message);
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  return (
+    <div className="space-y-1.5">
+      <label className="block text-[11px] font-bold text-gray-500">{label}</label>
+      <div
+        onDragOver={(e) => { e.preventDefault(); e.stopPropagation(); setIsDragging(true); }}
+        onDragEnter={(e) => { e.preventDefault(); e.stopPropagation(); setIsDragging(true); }}
+        onDragLeave={(e) => { e.preventDefault(); e.stopPropagation(); setIsDragging(false); }}
+        onDrop={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          setIsDragging(false);
+          if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+            processFile(e.dataTransfer.files[0]);
+          }
+        }}
+        className={`relative border-2 border-dashed rounded-xl p-3 text-center transition cursor-pointer flex flex-col items-center justify-center gap-1.5 ${
+          isDragging
+            ? 'border-relidd-red bg-red-50'
+            : isUploading
+            ? 'border-yellow-400 bg-yellow-50'
+            : value
+            ? 'border-green-300 bg-green-50/20 hover:border-green-400'
+            : 'border-gray-300 bg-gray-50/60 hover:border-gray-400 hover:bg-gray-50'
+        }`}
+      >
+        <input
+          type="file"
+          accept={accept}
+          className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
+          onChange={(e) => {
+            if (e.target.files && e.target.files[0]) {
+              processFile(e.target.files[0]);
+            }
+          }}
+          disabled={isUploading}
+        />
+        {isUploading ? (
+          <div className="flex items-center gap-2 text-xs font-bold text-yellow-700 pointer-events-none">
+            <RefreshCw className="w-4 h-4 animate-spin" /> Subiendo archivo...
+          </div>
+        ) : isDragging ? (
+          <div className="flex items-center gap-2 text-xs font-bold text-relidd-red pointer-events-none animate-pulse">
+            <Upload className="w-4 h-4 animate-bounce" /> ¡Suelta el archivo aquí para subirlo!
+          </div>
+        ) : (
+          <div className="flex items-center gap-2 text-xs text-gray-600 pointer-events-none">
+            <Upload className="w-4 h-4 text-relidd-red" />
+            <span><strong>Arrastra y suelta aquí tu archivo</strong> o haz clic para seleccionarlo</span>
+          </div>
+        )}
+      </div>
+      <input
+        type="text"
+        value={value || ''}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder="O escribe/pega una URL directa"
+        className="w-full px-3 py-1.5 border border-gray-200 rounded-lg text-xs bg-white text-gray-600 focus:ring-1 focus:ring-relidd-red outline-none"
+      />
+    </div>
+  );
+}
+
 export default function AdminPage() {
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
@@ -763,46 +859,19 @@ export default function AdminPage() {
                     />
                   </div>
 
-                  <div className="space-y-2">
-                    <label className="block text-[11px] font-bold text-gray-500">Archivo PDF en la nube</label>
-                    <div className="flex items-center gap-2">
-                      <input
-                        type="text"
-                        value={docItem.archivo || ''}
-                        onChange={(e) => {
-                          const updated = [...documents];
-                          updated[idx].archivo = e.target.value;
-                          setDocuments(updated);
-                        }}
-                        placeholder="Ruta local o URL en la nube"
-                        className="w-full px-3 py-2 border rounded-lg text-xs"
-                      />
-                      <label className="px-3 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-xs font-bold cursor-pointer flex items-center gap-1 flex-shrink-0">
-                        <Upload className="w-3.5 h-3.5" />
-                        <span>Subir</span>
-                        <input
-                          type="file"
-                          accept=".pdf"
-                          className="hidden"
-                          onChange={async (e) => {
-                            const file = e.target.files?.[0];
-                            if (file) {
-                              try {
-                                showNotification('Subiendo PDF a Cloudinary...');
-                                const url = await uploadToCloudinary(file, 'elecciones-relidd/docs');
-                                const updated = [...documents];
-                                updated[idx].archivo = url;
-                                setDocuments(updated);
-                                showNotification('PDF subido y vinculado');
-                              } catch (err: any) {
-                                setErrorMsg('Error al subir: ' + err.message);
-                              }
-                            }
-                          }}
-                        />
-                      </label>
-                    </div>
-                  </div>
+                  <DropzoneUpload
+                    label="Archivo PDF (Arrastra aquí o selecciona)"
+                    value={docItem.archivo || ''}
+                    accept=".pdf,application/pdf"
+                    folder="elecciones-relidd/docs"
+                    onChange={(url) => {
+                      const updated = [...documents];
+                      updated[idx].archivo = url;
+                      setDocuments(updated);
+                    }}
+                    onNotify={showNotification}
+                    onError={setErrorMsg}
+                  />
 
                   <div className="flex justify-between items-center pt-2 border-t border-gray-100">
                     <button
@@ -912,47 +981,20 @@ export default function AdminPage() {
                       />
                     </div>
 
-                    {/* Foto upload */}
-                    <div>
-                      <label className="block text-[11px] font-bold text-gray-500">Foto del Candidato</label>
-                      <div className="flex items-center gap-2">
-                        <input
-                          type="text"
-                          value={cand.foto || ''}
-                          onChange={(e) => {
-                            const updated = [...candidaturas];
-                            updated[idx].foto = e.target.value;
-                            setCandidaturas(updated);
-                          }}
-                          placeholder="URL de la imagen"
-                          className="w-full px-3 py-1.5 border rounded-lg text-xs"
-                        />
-                        <label className="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-xs font-bold cursor-pointer flex items-center gap-1 flex-shrink-0">
-                          <Upload className="w-3 h-3" />
-                          <span>Subir</span>
-                          <input
-                            type="file"
-                            accept="image/*"
-                            className="hidden"
-                            onChange={async (e) => {
-                              const file = e.target.files?.[0];
-                              if (file) {
-                                try {
-                                  showNotification('Subiendo foto...');
-                                  const url = await uploadToCloudinary(file, 'elecciones-relidd/candidaturas');
-                                  const updated = [...candidaturas];
-                                  updated[idx].foto = url;
-                                  setCandidaturas(updated);
-                                  showNotification('Foto subida exitosamente');
-                                } catch (err: any) {
-                                  setErrorMsg('Error: ' + err.message);
-                                }
-                              }
-                            }}
-                          />
-                        </label>
-                      </div>
-                    </div>
+                    {/* Foto upload con Drag and Drop */}
+                    <DropzoneUpload
+                      label="Fotografía del Candidato (Arrastra imagen o selecciona)"
+                      value={cand.foto || ''}
+                      accept="image/*"
+                      folder="elecciones-relidd/candidaturas"
+                      onChange={(url) => {
+                        const updated = [...candidaturas];
+                        updated[idx].foto = url;
+                        setCandidaturas(updated);
+                      }}
+                      onNotify={showNotification}
+                      onError={setErrorMsg}
+                    />
 
                     <div className="flex justify-between items-center pt-2 border-t border-gray-100">
                       <button
