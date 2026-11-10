@@ -38,6 +38,7 @@ export interface SiteConfig {
   correo: string;
   enlaces: {
     empadronamiento: string;
+    inscripcion?: string;
     votacion: string;
     facebook: string;
     instagram: string;

@@ -119,9 +119,9 @@ export default function HomePage() {
       if (activeEvent.t.toLowerCase().includes('inscripción') || activeEvent.t.toLowerCase().includes('candidatura')) {
         return {
           mensaje: `Etapa en curso: ${activeEvent.t}.`,
-          btnTexto: "Ver candidaturas",
-          btnHref: "#candidaturas",
-          isExternal: false,
+          btnTexto: config.enlaces?.inscripcion ? "Inscribir candidatura" : "Ver candidaturas",
+          btnHref: config.enlaces?.inscripcion || "#candidaturas",
+          isExternal: !!config.enlaces?.inscripcion,
           aviso: activeEvent.d
         };
       }
@@ -430,6 +430,31 @@ export default function HomePage() {
         {/* CANDIDATURAS */}
         <section id="candidaturas" className="wrap sec">
           <h2 className="st"><i className="bar y"></i>Candidaturas y propuestas</h2>
+          
+          {config.enlaces?.inscripcion && (
+            <div className="mb-6 p-5 sm:p-6 bg-[#FFF9E6] border-2 border-yellow-400 rounded-2xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-sm">
+              <div>
+                <span className="text-xs font-bold uppercase tracking-wider text-amber-800 bg-yellow-200 px-2.5 py-0.5 rounded-full inline-block mb-1.5">
+                  Convocatoria abierta · 10 al 16 de noviembre
+                </span>
+                <h3 className="text-lg sm:text-xl font-black text-gray-900 m-0">
+                  Inscripción de planchas y candidaturas departamentales
+                </h3>
+                <p className="text-sm text-gray-700 m-0 mt-1 max-w-2xl">
+                  Presenta tu postulación con la documentación exigida por el Comité Electoral mediante el formulario oficial.
+                </p>
+              </div>
+              <a 
+                href={config.enlaces.inscripcion} 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="btn btn-red whitespace-nowrap self-stretch md:self-auto justify-center"
+              >
+                Formulario de inscripción <svg><use href="#i-arrow"/></svg>
+              </a>
+            </div>
+          )}
+
           <div id="cands">
             {candidaturas.length > 0 ? (
               <div className="grid-c">

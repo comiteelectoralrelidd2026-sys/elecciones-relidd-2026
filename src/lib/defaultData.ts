@@ -4,6 +4,7 @@ export const DEFAULT_CONFIG: SiteConfig = {
   correo: "elecciones@relidd.org",
   enlaces: {
     empadronamiento: "https://forms.gle/Pbz7cqGfAR4AH59g7",
+    inscripcion: "https://forms.gle/REhinASGyFHCvdxB8",
     votacion: "",
     facebook: "",
     instagram: "",

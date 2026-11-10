@@ -435,6 +435,27 @@ export default function AdminPage() {
                   </p>
                 </div>
 
+                {/* Enlace de Inscripción de Candidaturas */}
+                <div className="space-y-2 md:col-span-2 bg-amber-50 p-4 rounded-2xl border border-yellow-300">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-amber-900 flex items-center gap-2">
+                    <Users className="w-4 h-4 text-amber-700" />
+                    Enlace de Inscripción de Candidaturas (Google Forms)
+                  </label>
+                  <input
+                    type="url"
+                    value={config.enlaces.inscripcion || ''}
+                    onChange={(e) => setConfig({
+                      ...config,
+                      enlaces: { ...config.enlaces, inscripcion: e.target.value }
+                    })}
+                    placeholder="https://forms.gle/..."
+                    className="w-full px-3.5 py-2.5 bg-white border border-yellow-400 rounded-xl text-sm focus:ring-2 focus:ring-relidd-red outline-none"
+                  />
+                  <p className="text-xs text-amber-800">
+                    Formulario oficial para postular planchas nacionales y coordinaciones departamentales (Vigente del 10 al 16 de noviembre).
+                  </p>
+                </div>
+
                 {/* Enlace de Votación */}
                 <div className="space-y-2 md:col-span-2 bg-red-50 p-4 rounded-2xl border border-red-200">
                   <label className="block text-xs font-bold uppercase tracking-wider text-relidd-red flex items-center gap-2">
